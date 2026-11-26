@@ -17,4 +17,14 @@ public class GameSettings {
     public final static long TRASH_SPAWN_COOLDOWN = 2000;
     public final static int TRASH_WIDTH = 140;
     public final static int TRASH_HEIGHT = 100;
+
+    public final static int BULLET_VELOCITY = 200;
+    public final static int BULLET_COOLDOWN = 1000;
+    public final static int BULLET_WIDTH = 15;
+    public final static int BULLET_HEIGHT = 45;
+
+    public final static short SHIP_BIT = 2;
+    public final static short TRASH_BIT = 4;
+    public final static short BULLET_BIT = 8;
+
 }

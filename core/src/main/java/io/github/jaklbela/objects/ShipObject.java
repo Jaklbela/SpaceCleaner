@@ -4,13 +4,20 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.TimeUtils;
 
 import io.github.jaklbela.GameSettings;
 
 public class ShipObject extends GameObject {
+
+    long lastShotTime;
+    int lives;
+
     public ShipObject(String texturePath, int x, int y, int width, int height, World world) {
-        super(texturePath, x, y, width, height, world);
+        super(texturePath, x, y, width, height, GameSettings.SHIP_BIT, world);
         body.setLinearDamping(10);
+        lastShotTime = 0;
+        lives = 3;
     }
 
     public void move(Vector3 vector3) {
@@ -35,9 +42,22 @@ public class ShipObject extends GameObject {
         }
     }
 
+    public boolean needToShoot() {
+        if (TimeUtils.millis() - lastShotTime >= GameSettings.BULLET_COOLDOWN) {
+            lastShotTime = TimeUtils.millis();
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public void draw(SpriteBatch batch) {
         putInFrame();
         super.draw(batch);
+    }
+
+    @Override
+    public void hit() {
+        lives--;
     }
 }

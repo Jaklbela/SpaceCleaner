@@ -13,6 +13,7 @@ import io.github.jaklbela.GameResources;
 import io.github.jaklbela.GameSession;
 import io.github.jaklbela.GameSettings;
 import io.github.jaklbela.Main;
+import io.github.jaklbela.objects.BulletObject;
 import io.github.jaklbela.objects.ShipObject;
 import io.github.jaklbela.objects.TrashObject;
 
@@ -21,12 +22,14 @@ public class GameScreen extends ScreenAdapter {
     ShipObject ship;
     GameSession gameSession;
     ArrayList<TrashObject> trashArray;
+    ArrayList<BulletObject> bulletArray;
 
     public GameScreen(Main mainClass) {
         this.mainClass = mainClass;
         gameSession = new GameSession();
 
         trashArray = new ArrayList<>();
+        bulletArray = new ArrayList<>();
 
         ship = new ShipObject(
             GameResources.SHIP_TEXTURE,
@@ -54,7 +57,18 @@ public class GameScreen extends ScreenAdapter {
             trashArray.add(trashObject);
         }
 
+        if (ship.needToShoot()) {
+            BulletObject bullet = new BulletObject(
+                GameResources.BULLET_TEXTURE,
+                ship.getX(), ship.getY() + ship.height / 2,
+                GameSettings.BULLET_WIDTH,
+                GameSettings.BULLET_HEIGHT,
+                mainClass.world);
+            bulletArray.add(bullet);
+        }
+
         updateTrash();
+        updateBullet();
 
         draw();
     }
@@ -66,9 +80,8 @@ public class GameScreen extends ScreenAdapter {
 
         mainClass.batch.begin();
         ship.draw(mainClass.batch);
-        for (TrashObject trash : trashArray) {
-            trash.draw(mainClass.batch);
-        }
+        for (TrashObject trash : trashArray) trash.draw(mainClass.batch);
+        for (BulletObject bullet : bulletArray) bullet.draw(mainClass.batch);
         mainClass.batch.end();
     }
 
@@ -87,6 +100,15 @@ public class GameScreen extends ScreenAdapter {
             if (!trashArray.get(i).isInFrame()) {
                 mainClass.world.destroyBody(trashArray.get(i).body);
                 trashArray.remove(i--);
+            }
+        }
+    }
+
+    private void updateBullet() {
+        for (int i = 0; i < bulletArray.size(); i++) {
+            if (bulletArray.get(i).hasToBeDestroyed()) {
+                mainClass.world.destroyBody(bulletArray.get(i).body);
+                bulletArray.remove(i--);
             }
         }
     }

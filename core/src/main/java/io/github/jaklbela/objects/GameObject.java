@@ -16,9 +16,10 @@ public class GameObject {
     public int height;
     public Body body;
     protected Texture texture;
+    public short cBits;
 
     protected GameObject(String texturePath, int x, int y,
-                         int width, int height, World world) {
+                         int width, int height, short cBits, World world) {
         this.width = width;
         this.height = height;
         texture = new Texture(texturePath);
@@ -66,4 +67,5 @@ public class GameObject {
         return body;
     }
 
+    public void hit() {}
 }
